@@ -2,63 +2,57 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Brochure SCAFFOLD SAC - SIG</title>
     <script src="jquery.js"></script>
     <script src="turn.js"></script>
     <style>
-        /* Fondo y estructura general */
         body { 
             background: #111; 
             margin: 0; padding: 0;
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            width: 100vw;
-            overflow: hidden;
-            position: fixed; 
-            font-family: Arial, sans-serif;
+            display: flex; justify-content: center; align-items: center; 
+            min-height: 100vh; width: 100vw;
+            overflow-x: hidden;
         }
         
         .flipbook-viewport {
-            width: 100%; 
-            height: 100%;
-            display: flex; 
-            justify-content: center; 
-            align-items: center;
+            width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            transition: transform 0.3s ease;
         }
 
-        /* Contenedor del libro centrado */
         .flipbook {
-            margin: 0 auto !important; 
+            margin: 20px auto !important; 
             overflow: visible !important; 
         }
 
-        /* Estilo de las páginas */
         .flipbook .page {
-            background-color: #fff; /* Fondo blanco para las diapositivas */
-            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            background-color: #fff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
 
-        /* Ajuste de imagen para evitar distorsión 4:3 */
         .flipbook img {
             width: 100% !important;
             height: 100% !important;
             display: block;
-            object-fit: contain; /* Mantiene la proporción original */
+            object-fit: fill; 
             pointer-events: none;
+        }
+
+        /* Clase para efecto de zoom por doble clic */
+        .zoomed {
+            transform: scale(1.5);
+            cursor: zoom-out;
         }
     </style>
 </head>
 <body>
 
-    <!-- Audio del efecto de página -->
     <audio id="audioFlip" src="images/página-flip.mp3" preload="auto"></audio>
 
     <div class="flipbook-viewport">
         <div class="flipbook">
-            <!-- PÁGINAS: Copia y pega según necesites hasta la 56 -->
+            <!-- PÁGINAS DEL BROCHURE -->
             <div><img src="images/paginas_1.jpg"></div>
             <div><img src="images/paginas_2.jpg"></div>
             <div><img src="images/paginas_3.jpg"></div>
@@ -121,6 +115,7 @@
     <script>
         $(window).ready(function() {
             var flipbook = $('.flipbook');
+            var viewport = $('.flipbook-viewport');
             var sound = document.getElementById("audioFlip");
 
             function loadFlipbook() {
@@ -128,29 +123,25 @@
                 var h = $(window).height();
                 var finalW, finalH, displayMode;
 
-                // RATIO 4:3 (Vertical 3/4 = 0.75)
-                var ratioHoja = 0.75; 
+                var ratioHoja = 1.333; // Ratio 4:3 horizontal
 
                 if (w < 600) { 
-                    // MÓVIL: Una sola diapositiva
                     displayMode = 'single';
-                    finalW = w * 0.92; 
+                    finalW = w * 0.95; 
                     finalH = finalW / ratioHoja;
-                    
-                    if (finalH > h * 0.85) {
-                        finalH = h * 0.85;
+                    if (finalH > h * 0.8) {
+                        finalH = h * 0.8;
                         finalW = finalH * ratioHoja;
                     }
                 } else { 
-                    // PC: Vista de libro (Doble página)
                     displayMode = 'double';
-                    var maxH = h * 0.82; // Espacio vertical para no pegar al borde
-                    finalH = Math.min(maxH, 580); 
-                    finalW = (finalH * ratioHoja) * 2; 
+                    var maxW = w * 0.90;
+                    finalW = Math.min(maxW, 1100); 
+                    finalH = (finalW / 2) / ratioHoja; 
 
-                    if (finalW > w * 0.95) {
-                        finalW = w * 0.95;
-                        finalH = (finalW / 2) / ratioHoja;
+                    if (finalH > h * 0.85) {
+                        finalH = h * 0.85;
+                        finalW = (finalH * ratioHoja) * 2;
                     }
                 }
 
@@ -159,13 +150,12 @@
                     flipbook.turn('size', finalW, finalH);
                 } else {
                     flipbook.turn({
-                        width: finalW,
-                        height: finalH,
+                        width: finalW, height: finalH,
                         display: displayMode,
                         autoCenter: true,
                         acceleration: true,
                         gradients: true,
-                        elevation: 60, // Mejora la visibilidad de la esquina inteligente
+                        elevation: 50,
                         duration: 800,
                         when: {
                             turning: function(event, page, view) {
@@ -179,14 +169,14 @@
                 }
             }
 
-            // Ejecución con pequeño retraso para asegurar el renderizado
-            setTimeout(loadFlipbook, 150);
-
-            $(window).bind('resize', function() {
-                loadFlipbook();
+            // Zoom por doble clic/toque
+            viewport.on('dblclick dbltap', function() {
+                $(this).toggleClass('zoomed');
             });
 
-            // Desbloquear audio tras interactuar (política de navegadores)
+            setTimeout(loadFlipbook, 150);
+            $(window).bind('resize', loadFlipbook);
+
             $(document).one('touchstart click', function() {
                 if (sound) {
                     sound.play().then(() => {
@@ -194,12 +184,6 @@
                         sound.currentTime = 0;
                     }).catch(e => {});
                 }
-            });
-
-            // Navegación con flechas del teclado
-            $(document).keydown(function(e) {
-                if (e.keyCode == 37) flipbook.turn("previous");
-                if (e.keyCode == 39) flipbook.turn("next");
             });
         });
     </script>
