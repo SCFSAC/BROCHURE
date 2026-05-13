@@ -3,41 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Flipbook Proporcional</title>
+    <title>Brochure SCAFFOLD SAC</title>
     <script src="jquery.js"></script>
     <script src="turn.js"></script>
     <style>
         body { 
             background: #111; 
             margin: 0; padding: 0;
-            display: flex; justify-content: center; align-items: center; 
-            height: 100vh; width: 100vw;
+            display: flex; 
+            justify-content: center; /* Centrado horizontal */
+            align-items: center;     /* Centrado vertical */
+            height: 100vh; 
+            width: 100vw;
             overflow: hidden;
             position: fixed; 
         }
         
         .flipbook-viewport {
-            width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center;
+            width: 100%; 
+            height: 100%;
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
         }
 
+        /* Ajuste para que el contenedor siempre esté en el centro real */
         .flipbook {
-            margin: 0 auto;
+            display: inline-block;
+            margin: 0 auto !important; 
             overflow: visible !important; 
         }
 
-        /* Cada página mantiene el color de fondo */
         .flipbook .page {
             background-color: #111;
         }
 
-        /* Ajuste de imagen: 'contain' para que no se deforme, 
-           pero el script ahora ajustará el contenedor al tamaño correcto */
         .flipbook img {
             width: 100%;
             height: 100%;
             display: block;
-            object-fit: fill; /* Cambiado a fill para que llene el contenedor que ahora SÍ tiene la forma de la hoja */
+            object-fit: fill; 
             pointer-events: none;
         }
     </style>
@@ -48,7 +53,7 @@
 
     <div class="flipbook-viewport">
         <div class="flipbook">
-            <!-- Tus 56 páginas -->
+            <!-- Tus páginas -->
             <div><img src="images/paginas_1.jpg"></div>
             <div><img src="images/paginas_2.jpg"></div>
             <div><img src="images/paginas_3.jpg"></div>
@@ -118,31 +123,26 @@
                 var h = $(window).height();
                 var finalW, finalH, displayMode;
 
-                // Definimos la proporción de tus imágenes (Ancho / Alto)
-                // Si tus imágenes son más altas que anchas (verticales), el ratio es < 1
-                // Ejemplo: 0.70 es una proporción común para hojas A4/Carta
+                // Mantenemos tu proporción de hoja
                 var ratioHoja = 0.70; 
 
                 if (w < 600) { 
                     displayMode = 'single';
-                    finalW = w * 0.85; 
-                    finalH = finalW / ratioHoja; // El alto se calcula según la hoja
-                    
-                    // Si el alto calculado es mayor que la pantalla, ajustamos por alto
-                    if (finalH > h * 0.8) {
-                        finalH = h * 0.8;
+                    finalW = w * 0.90; 
+                    finalH = finalW / ratioHoja;
+                    if (finalH > h * 0.85) {
+                        finalH = h * 0.85;
                         finalW = finalH * ratioHoja;
                     }
                 } else { 
                     displayMode = 'double';
-                    // En PC el ancho total es de 2 hojas
-                    var pcHeight = h * 0.85;
-                    finalH = Math.min(pcHeight, 600);
+                    // Para PC, calculamos que el ancho total sea el doble de una hoja
+                    var maxH = h * 0.85;
+                    finalH = Math.min(maxH, 600);
                     finalW = (finalH * ratioHoja) * 2; 
 
-                    // Si el ancho se pasa de la pantalla
-                    if (finalW > w * 0.9) {
-                        finalW = w * 0.9;
+                    if (finalW > w * 0.95) {
+                        finalW = w * 0.95;
                         finalH = (finalW / 2) / ratioHoja;
                     }
                 }
@@ -155,7 +155,7 @@
                         width: finalW,
                         height: finalH,
                         display: displayMode,
-                        autoCenter: true,
+                        autoCenter: true, // Esto ayuda al centrado interno
                         acceleration: true,
                         gradients: true,
                         elevation: 50,
@@ -172,7 +172,8 @@
                 }
             }
 
-            setTimeout(loadFlipbook, 200);
+            // Un pequeño delay ayuda a que el navegador calcule bien el centro
+            setTimeout(loadFlipbook, 150);
 
             $(window).bind('resize', function() {
                 loadFlipbook();
