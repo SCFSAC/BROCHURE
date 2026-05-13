@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Brochure SCAFFOLD SAC - Full Screen</title>
+    <title>Brochure SCAFFOLD SAC - SIG</title>
     <script src="jquery.js"></script>
     <script src="turn.js"></script>
     <style>
         body { 
             background: #111; 
             margin: 0; padding: 0;
-            display: flex; justify-content: center; align-items: center; 
+            display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; 
             min-height: 100vh; width: 100vw;
             overflow: hidden;
         }
         
         .flipbook-viewport {
-            width: 100vw; height: 100vh;
+            width: 100vw; height: calc(100vh - 80px); /* Espacio para los botones abajo */
             display: flex; justify-content: center; align-items: center;
             transition: transform 0.3s ease;
         }
@@ -31,11 +32,40 @@
         }
 
         .flipbook img {
-            width: 100% !important;
-            height: 100% !important;
-            display: block;
-            object-fit: fill; 
-            pointer-events: none;
+            width: 100% !important; height: 100% !important;
+            display: block; object-fit: fill; pointer-events: none;
+        }
+
+        /* --- BARRA DE NAVEGACIÓN INFERIOR --- */
+        .nav-container {
+            position: fixed;
+            bottom: 20px;
+            display: flex;
+            gap: 20px;
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: #ffcc00; /* Amarillo Scaffold */
+            color: #000; /* Texto Negro */
+            border: none;
+            padding: 12px 25px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 30px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            user-select: none;
+        }
+
+        .nav-button:hover {
+            background: #e6b800;
+            transform: scale(1.05);
+        }
+
+        .nav-button:active {
+            transform: scale(0.95);
         }
 
         /* Zoom por doble clic */
@@ -48,14 +78,10 @@
 <body>
 
     <audio id="audioFlip" src="images/página-flip.mp3" preload="auto"></audio>
-    
-    <!-- Botones de navegación -->
-    <button class="nav-button btn-prev" id="prevBtn">&#10094;</button>
-    <button class="nav-button btn-next" id="nextBtn">&#10095;</button>
-    
+
     <div class="flipbook-viewport">
         <div class="flipbook">
-            <!-- LISTADO COMPLETO DE 56 PÁGINAS -->
+            <!-- PÁGINAS (56 diapositivas) -->
             <div><img src="images/paginas_1.jpg"></div>
             <div><img src="images/paginas_2.jpg"></div>
             <div><img src="images/paginas_3.jpg"></div>
@@ -114,6 +140,12 @@
             <div><img src="images/paginas_56.jpg"></div>
         </div>
     </div>
+
+    <!-- Contenedor de botones -->
+    <div class="nav-container">
+        <button class="nav-button" id="prevBtn">ANTERIOR</button>
+        <button class="nav-button" id="nextBtn">SIGUIENTE</button>
+    </div>
     
     <script>
         $(window).ready(function() {
@@ -126,21 +158,20 @@
                 var h = $(window).height();
                 var finalW, finalH, displayMode;
 
-                var ratioHoja = 1.333; // Ratio 4:3 Horizontal
+                var ratioHoja = 1.333; // 4:3 Horizontal
 
                 if (w < 600) { 
                     displayMode = 'single';
                     finalW = w * 0.98; 
                     finalH = finalW / ratioHoja;
-                    if (finalH > h * 0.95) {
-                        finalH = h * 0.95;
+                    if (finalH > (h - 100) * 0.9) {
+                        finalH = (h - 100) * 0.9;
                         finalW = finalH * ratioHoja;
                     }
                 } else { 
                     displayMode = 'double';
-                    // Cálculo para maximizar según el ancho o alto disponible
                     var potentialW = w * 0.97;
-                    var potentialH = h * 0.97;
+                    var potentialH = (h - 100) * 0.95;
 
                     if (potentialW / (ratioHoja * 2) > potentialH) {
                         finalH = potentialH;
@@ -175,15 +206,14 @@
                 }
             }
 
-            // Zoom por doble clic/toque
-            viewport.on('dblclick dbltap', function() {
-                $(this).toggleClass('zoomed');
-            });
+            $('#prevBtn').click(function() { flipbook.turn('previous'); });
+            $('#nextBtn').click(function() { flipbook.turn('next'); });
+
+            viewport.on('dblclick dbltap', function() { $(this).toggleClass('zoomed'); });
 
             setTimeout(loadFlipbook, 100);
             $(window).bind('resize', loadFlipbook);
 
-            // Desbloqueo de audio
             $(document).one('touchstart click', function() {
                 if (sound) {
                     sound.play().then(() => {
