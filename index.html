@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Brochure SCAFFOLD SAC</title>
+    <title>Brochure SCAFFOLD SAC - Full Screen</title>
     <script src="jquery.js"></script>
     <script src="turn.js"></script>
     <style>
@@ -12,23 +12,22 @@
             margin: 0; padding: 0;
             display: flex; justify-content: center; align-items: center; 
             min-height: 100vh; width: 100vw;
-            overflow-x: hidden;
+            overflow: hidden;
         }
         
         .flipbook-viewport {
-            width: 100%; height: 100%;
+            width: 100vw; height: 100vh;
             display: flex; justify-content: center; align-items: center;
             transition: transform 0.3s ease;
         }
 
         .flipbook {
-            margin: 20px auto !important; 
-            overflow: visible !important; 
+            margin: 0 auto !important; 
         }
 
         .flipbook .page {
             background-color: #fff;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            box-shadow: 0 0 25px rgba(0,0,0,0.6);
         }
 
         .flipbook img {
@@ -39,9 +38,9 @@
             pointer-events: none;
         }
 
-        /* Clase para efecto de zoom por doble clic */
+        /* Zoom por doble clic */
         .zoomed {
-            transform: scale(1.5);
+            transform: scale(1.4);
             cursor: zoom-out;
         }
     </style>
@@ -52,7 +51,7 @@
 
     <div class="flipbook-viewport">
         <div class="flipbook">
-            <!-- PÁGINAS DEL BROCHURE -->
+            <!-- LISTADO COMPLETO DE 56 PÁGINAS -->
             <div><img src="images/paginas_1.jpg"></div>
             <div><img src="images/paginas_2.jpg"></div>
             <div><img src="images/paginas_3.jpg"></div>
@@ -123,25 +122,28 @@
                 var h = $(window).height();
                 var finalW, finalH, displayMode;
 
-                var ratioHoja = 1.333; // Ratio 4:3 horizontal
+                var ratioHoja = 1.333; // Ratio 4:3 Horizontal
 
                 if (w < 600) { 
                     displayMode = 'single';
-                    finalW = w * 0.95; 
+                    finalW = w * 0.98; 
                     finalH = finalW / ratioHoja;
-                    if (finalH > h * 0.8) {
-                        finalH = h * 0.8;
+                    if (finalH > h * 0.95) {
+                        finalH = h * 0.95;
                         finalW = finalH * ratioHoja;
                     }
                 } else { 
                     displayMode = 'double';
-                    var maxW = w * 0.90;
-                    finalW = Math.min(maxW, 1100); 
-                    finalH = (finalW / 2) / ratioHoja; 
+                    // Cálculo para maximizar según el ancho o alto disponible
+                    var potentialW = w * 0.97;
+                    var potentialH = h * 0.97;
 
-                    if (finalH > h * 0.85) {
-                        finalH = h * 0.85;
+                    if (potentialW / (ratioHoja * 2) > potentialH) {
+                        finalH = potentialH;
                         finalW = (finalH * ratioHoja) * 2;
+                    } else {
+                        finalW = potentialW;
+                        finalH = (finalW / 2) / ratioHoja;
                     }
                 }
 
@@ -174,9 +176,10 @@
                 $(this).toggleClass('zoomed');
             });
 
-            setTimeout(loadFlipbook, 150);
+            setTimeout(loadFlipbook, 100);
             $(window).bind('resize', loadFlipbook);
 
+            // Desbloqueo de audio
             $(document).one('touchstart click', function() {
                 if (sound) {
                     sound.play().then(() => {
