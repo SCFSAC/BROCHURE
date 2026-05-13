@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mi Flipbook Responsivo</title>
     <script src="jquery.js"></script>
     <script src="turn.js"></script>
     <style>
@@ -13,17 +14,25 @@
             height: 100vh; width: 100vw;
             overflow: hidden;
             position: fixed; 
+            font-family: sans-serif;
         }
         
         .flipbook-viewport {
             width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
+            perspective: 1000px;
         }
 
-        /* Contenedor de la página */
+        .flipbook {
+            margin: 0 auto;
+            transition: margin 0.3s ease;
+        }
+
+        /* Estilo de cada página */
         .flipbook .page {
             background: #111; 
             overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
 
         .flipbook img {
@@ -32,70 +41,77 @@
             object-fit: contain; 
             display: block;
         }
+
+        /* Ocultar scrollbars */
+        ::-webkit-scrollbar {
+            display: none;
+        }
     </style>
 </head>
 <body>
 
+    <!-- Audio para el efecto de pasar página -->
     <audio id="audioFlip" src="images/página-flip.mp3" preload="auto"></audio>
 
     <div class="flipbook-viewport">
-          <div class="flipbook">
-             <div><img src="images/paginas_1.jpg"></div>
-             <div><img src="images/paginas_2.jpg"></div>
-             <div><img src="images/paginas_3.jpg"></div>
-             <div><img src="images/paginas_4.jpg"></div>
-             <div><img src="images/paginas_5.jpg"></div>
-             <div><img src="images/paginas_6.jpg"></div>
-             <div><img src="images/paginas_7.jpg"></div>
-             <div><img src="images/paginas_8.jpg"></div>
-             <div><img src="images/paginas_9.jpg"></div>
-             <div><img src="images/paginas_10.jpg"></div>
-             <div><img src="images/paginas_11.jpg"></div>
-             <div><img src="images/paginas_12.jpg"></div>
-             <div><img src="images/paginas_13.jpg"></div>
-             <div><img src="images/paginas_14.jpg"></div>
-             <div><img src="images/paginas_15.jpg"></div>
-             <div><img src="images/paginas_16.jpg"></div>
-             <div><img src="images/paginas_17.jpg"></div>
-             <div><img src="images/paginas_18.jpg"></div>
-             <div><img src="images/paginas_19.jpg"></div>
-             <div><img src="images/paginas_20.jpg"></div>
-             <div><img src="images/paginas_21.jpg"></div>
-             <div><img src="images/paginas_22.jpg"></div>
-             <div><img src="images/paginas_23.jpg"></div>
-             <div><img src="images/paginas_24.jpg"></div>
-             <div><img src="images/paginas_25.jpg"></div>
-             <div><img src="images/paginas_26.jpg"></div>
-             <div><img src="images/paginas_27.jpg"></div>
-             <div><img src="images/paginas_28.jpg"></div>
-             <div><img src="images/paginas_29.jpg"></div>
-             <div><img src="images/paginas_30.jpg"></div>
-             <div><img src="images/paginas_31.jpg"></div>
-             <div><img src="images/paginas_32.jpg"></div>
-             <div><img src="images/paginas_33.jpg"></div>
-             <div><img src="images/paginas_34.jpg"></div>
-             <div><img src="images/paginas_35.jpg"></div>
-             <div><img src="images/paginas_36.jpg"></div>
-             <div><img src="images/paginas_37.jpg"></div>
-             <div><img src="images/paginas_38.jpg"></div>
-             <div><img src="images/paginas_39.jpg"></div>
-             <div><img src="images/paginas_40.jpg"></div>
-             <div><img src="images/paginas_41.jpg"></div>
-             <div><img src="images/paginas_42.jpg"></div>
-             <div><img src="images/paginas_43.jpg"></div>
-             <div><img src="images/paginas_44.jpg"></div>
-             <div><img src="images/paginas_45.jpg"></div>
-             <div><img src="images/paginas_46.jpg"></div>
-             <div><img src="images/paginas_47.jpg"></div>
-             <div><img src="images/paginas_48.jpg"></div>
-             <div><img src="images/paginas_49.jpg"></div>
-             <div><img src="images/paginas_50.jpg"></div>
-             <div><img src="images/paginas_51.jpg"></div>
-             <div><img src="images/paginas_52.jpg"></div>
-             <div><img src="images/paginas_53.jpg"></div>
-             <div><img src="images/paginas_54.jpg"></div>
-             <div><img src="images/paginas_55.jpg"></div>
-             <div><img src="images/paginas_56.jpg"></div>
+        <div class="flipbook">
+            <!-- Páginas (se mantienen tus 56 divs) -->
+            <div><img src="images/paginas_1.jpg"></div>
+            <div><img src="images/paginas_2.jpg"></div>
+            <div><img src="images/paginas_3.jpg"></div>
+            <div><img src="images/paginas_4.jpg"></div>
+            <div><img src="images/paginas_5.jpg"></div>
+            <div><img src="images/paginas_6.jpg"></div>
+            <div><img src="images/paginas_7.jpg"></div>
+            <div><img src="images/paginas_8.jpg"></div>
+            <div><img src="images/paginas_9.jpg"></div>
+            <div><img src="images/paginas_10.jpg"></div>
+            <div><img src="images/paginas_11.jpg"></div>
+            <div><img src="images/paginas_12.jpg"></div>
+            <div><img src="images/paginas_13.jpg"></div>
+            <div><img src="images/paginas_14.jpg"></div>
+            <div><img src="images/paginas_15.jpg"></div>
+            <div><img src="images/paginas_16.jpg"></div>
+            <div><img src="images/paginas_17.jpg"></div>
+            <div><img src="images/paginas_18.jpg"></div>
+            <div><img src="images/paginas_19.jpg"></div>
+            <div><img src="images/paginas_20.jpg"></div>
+            <div><img src="images/paginas_21.jpg"></div>
+            <div><img src="images/paginas_22.jpg"></div>
+            <div><img src="images/paginas_23.jpg"></div>
+            <div><img src="images/paginas_24.jpg"></div>
+            <div><img src="images/paginas_25.jpg"></div>
+            <div><img src="images/paginas_26.jpg"></div>
+            <div><img src="images/paginas_27.jpg"></div>
+            <div><img src="images/paginas_28.jpg"></div>
+            <div><img src="images/paginas_29.jpg"></div>
+            <div><img src="images/paginas_30.jpg"></div>
+            <div><img src="images/paginas_31.jpg"></div>
+            <div><img src="images/paginas_32.jpg"></div>
+            <div><img src="images/paginas_33.jpg"></div>
+            <div><img src="images/paginas_34.jpg"></div>
+            <div><img src="images/paginas_35.jpg"></div>
+            <div><img src="images/paginas_36.jpg"></div>
+            <div><img src="images/paginas_37.jpg"></div>
+            <div><img src="images/paginas_38.jpg"></div>
+            <div><img src="images/paginas_39.jpg"></div>
+            <div><img src="images/paginas_40.jpg"></div>
+            <div><img src="images/paginas_41.jpg"></div>
+            <div><img src="images/paginas_42.jpg"></div>
+            <div><img src="images/paginas_43.jpg"></div>
+            <div><img src="images/paginas_44.jpg"></div>
+            <div><img src="images/paginas_45.jpg"></div>
+            <div><img src="images/paginas_46.jpg"></div>
+            <div><img src="images/paginas_47.jpg"></div>
+            <div><img src="images/paginas_48.jpg"></div>
+            <div><img src="images/paginas_49.jpg"></div>
+            <div><img src="images/paginas_50.jpg"></div>
+            <div><img src="images/paginas_51.jpg"></div>
+            <div><img src="images/paginas_52.jpg"></div>
+            <div><img src="images/paginas_53.jpg"></div>
+            <div><img src="images/paginas_54.jpg"></div>
+            <div><img src="images/paginas_55.jpg"></div>
+            <div><img src="images/paginas_56.jpg"></div>
         </div>
     </div>
     
@@ -107,27 +123,27 @@
             function loadFlipbook() {
                 var w = $(window).width();
                 var h = $(window).height();
-                
                 var finalW, finalH, displayMode;
 
-                // Cálculo de dimensiones responsivas
                 if (w < 600) { 
-                    // Celular: Modo una sola hoja
-                    finalW = w * 0.98;
-                    finalH = h * 0.85;
+                    // MODO MÓVIL: Una sola hoja centrada
                     displayMode = 'single';
+                    finalW = w * 0.92; // Casi todo el ancho
+                    // Proporción vertical de una hoja (ajustable)
+                    finalH = Math.min(h * 0.85, finalW * 1.4); 
                 } else { 
-                    // PC: Modo doble hoja
-                    // Mantenemos una proporción balanceada para evitar cortes
-                    finalW = Math.min(w * 0.9, 1200); 
-                    finalH = Math.min(h * 0.9, 600);
+                    // MODO PC: Doble hoja
                     displayMode = 'double';
+                    finalW = Math.min(w * 0.9, 1200); 
+                    finalH = Math.min(h * 0.9, 650);
                 }
 
                 if (flipbook.turn('is')) {
-                    flipbook.turn('size', finalW, finalH);
+                    // Actualizar tamaño y modo si ya está iniciado
                     flipbook.turn('display', displayMode);
+                    flipbook.turn('size', finalW, finalH);
                 } else {
+                    // Inicializar por primera vez
                     flipbook.turn({
                         width: finalW,
                         height: finalH,
@@ -150,14 +166,15 @@
                 }
             }
 
-            loadFlipbook();
+            // Inicialización al cargar
+            setTimeout(loadFlipbook, 100);
 
-            // Ajuste automático si se gira el dispositivo
+            // Ajuste en cambio de tamaño o rotación
             $(window).bind('resize', function() {
                 loadFlipbook();
             });
 
-            // Interacción para activar audio (Requerido por navegadores)
+            // Activar audio para navegadores móviles tras primer toque
             $(document).one('touchstart click', function() {
                 if (sound) {
                     sound.play().then(() => {
@@ -166,12 +183,12 @@
                     }).catch(e => {});
                 }
             });
-        });
 
-        // Navegación con flechas
-        $(document).keydown(function(e) {
-            if (e.keyCode == 37) $(".flipbook").turn("previous");
-            if (e.keyCode == 39) $(".flipbook").turn("next");
+            // Navegación con teclado
+            $(document).keydown(function(e) {
+                if (e.keyCode == 37) flipbook.turn("previous");
+                if (e.keyCode == 39) flipbook.turn("next");
+            });
         });
     </script>
 </body>
