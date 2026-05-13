@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mi Flipbook Responsivo</title>
+    <title>Flipbook Corregido</title>
     <script src="jquery.js"></script>
     <script src="turn.js"></script>
     <style>
@@ -14,48 +14,49 @@
             height: 100vh; width: 100vw;
             overflow: hidden;
             position: fixed; 
-            font-family: sans-serif;
         }
         
         .flipbook-viewport {
             width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
-            perspective: 1000px;
         }
 
+        /* CRUCIAL: El contenedor debe permitir que la esquina "sobresalga" durante la animación */
         .flipbook {
             margin: 0 auto;
-            transition: margin 0.3s ease;
+            overflow: visible !important; 
         }
 
-        /* Estilo de cada página */
+        /* Ajuste de las páginas para que coincidan con la esquina sensible */
         .flipbook .page {
-            background: #111; 
+            background-color: #111;
+            background-size: 100% 100%;
             overflow: hidden;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
 
+        /* Forzamos que la imagen ocupe TODO el div de la página sin dejar espacios */
         .flipbook img {
             width: 100% !important;
             height: 100% !important;
-            object-fit: contain; 
             display: block;
+            pointer-events: none; /* Evita que la imagen interfiera con el clic de la esquina */
         }
 
-        /* Ocultar scrollbars */
-        ::-webkit-scrollbar {
-            display: none;
+        /* Sombra interna para dar profundidad al pliegue */
+        .flipbook .shadow {
+            -webkit-box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            -moz-box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
     </style>
 </head>
 <body>
 
-    <!-- Audio para el efecto de pasar página -->
     <audio id="audioFlip" src="images/página-flip.mp3" preload="auto"></audio>
 
     <div class="flipbook-viewport">
         <div class="flipbook">
-            <!-- Páginas (se mantienen tus 56 divs) -->
+            <!-- Iteración de tus 56 páginas -->
             <div><img src="images/paginas_1.jpg"></div>
             <div><img src="images/paginas_2.jpg"></div>
             <div><img src="images/paginas_3.jpg"></div>
@@ -126,24 +127,19 @@
                 var finalW, finalH, displayMode;
 
                 if (w < 600) { 
-                    // MODO MÓVIL: Una sola hoja centrada
                     displayMode = 'single';
-                    finalW = w * 0.92; // Casi todo el ancho
-                    // Proporción vertical de una hoja (ajustable)
-                    finalH = Math.min(h * 0.85, finalW * 1.4); 
+                    finalW = w * 0.85; // Un poco menos de ancho para que la esquina no toque el borde del cel
+                    finalH = Math.min(h * 0.8, finalW * 1.4); 
                 } else { 
-                    // MODO PC: Doble hoja
                     displayMode = 'double';
-                    finalW = Math.min(w * 0.9, 1200); 
-                    finalH = Math.min(h * 0.9, 650);
+                    finalW = Math.min(w * 0.9, 1100); 
+                    finalH = Math.min(h * 0.85, 600);
                 }
 
                 if (flipbook.turn('is')) {
-                    // Actualizar tamaño y modo si ya está iniciado
                     flipbook.turn('display', displayMode);
                     flipbook.turn('size', finalW, finalH);
                 } else {
-                    // Inicializar por primera vez
                     flipbook.turn({
                         width: finalW,
                         height: finalH,
@@ -151,12 +147,11 @@
                         autoCenter: true,
                         acceleration: true,
                         gradients: true,
-                        elevation: 50,
-                        duration: 800,
+                        elevation: 60, // Aumentamos la elevación para que la esquina sea más visible
+                        duration: 1000,
                         when: {
                             turning: function(event, page, view) {
                                 if (sound) {
-                                    sound.pause();
                                     sound.currentTime = 0;
                                     sound.play().catch(e => {});
                                 }
@@ -166,15 +161,12 @@
                 }
             }
 
-            // Inicialización al cargar
-            setTimeout(loadFlipbook, 100);
+            setTimeout(loadFlipbook, 200);
 
-            // Ajuste en cambio de tamaño o rotación
             $(window).bind('resize', function() {
                 loadFlipbook();
             });
 
-            // Activar audio para navegadores móviles tras primer toque
             $(document).one('touchstart click', function() {
                 if (sound) {
                     sound.play().then(() => {
@@ -184,7 +176,6 @@
                 }
             });
 
-            // Navegación con teclado
             $(document).keydown(function(e) {
                 if (e.keyCode == 37) flipbook.turn("previous");
                 if (e.keyCode == 39) flipbook.turn("next");
